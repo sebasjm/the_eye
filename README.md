@@ -1,6 +1,6 @@
 # THE EYE
 
-Reload the browser using inotifywait, socat and websockets
+Auto-refresh the browser on file change in the source code using things that you may already have.
 
 ## Requirements
 
