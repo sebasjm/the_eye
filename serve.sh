@@ -33,9 +33,10 @@ SERVER_PID=$!
 # * run the build script
 # * notify the browser about the change
 echo watching $WATCH_DIRECTORY for changes
-inotifywait -e close_write  $WATCH_DIRECTORY -q -m | while read line; do
-    echo $(date) $line
-    bash $TRIGGER_SCRIPT $@
+inotifywait -e close_write -e delete -e moved_from -r $WATCH_DIRECTORY -q -m | while read line; do
+    $DIR/send.sh '{"type":"BUILDING"}'
+    echo -n $(date "+%D %T") $line " "
+    /usr/bin/time -f %E bash $TRIGGER_SCRIPT $@
     $DIR/send.sh '{"type":"RELOAD"}'
 done;
 
