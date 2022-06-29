@@ -1,7 +1,15 @@
 #!/bin/bash
 
+LOCK=/var/lock/the_eye_watcher
+
+exec 4>$LOCK
+flock -xn 4
+[ "$?" != "0" ] && echo another watch running, remove $LOCK if not && exit 1
+
 function cleanup {
  trap - SIGHUP SIGINT SIGTERM SIGQUIT
+ flock -u $LOCK
+ exec 4<&-
  echo -n "Cleaning up... "
  kill $SERVER_PID
  kill -- -$$
